@@ -8,7 +8,7 @@
         tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
         
     onMount(async () => {
-        let res = await fetch("http://koldin.myddns.me:3101/post/" + postId, {
+        let res = await fetch("https://koldin.myddns.me:8080/post/" + postId, {
             method: "POST",
             body: JSON.stringify({
                 tocken

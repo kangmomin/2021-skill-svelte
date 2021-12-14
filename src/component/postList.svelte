@@ -28,17 +28,23 @@ let controller = [
     }
 ]
 
+let tocken
+if (document.cookie.split("; ").find((row) => row.startsWith("tocken"))) 
+    tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
+else
+    document.cookie = "tocken="
 
-let links = `http://koldin.myddns.me:3101/post?page=${page}`
+let links = `https://koldin.myddns.me:8080/post?page=${page}`
 let posts = false
 if(search != null) links += `&search=${search}`
 onMount(async () => {
+    // document.cookie = "tocken="
     const res = await fetch(links)
     posts = await res.json()
 })
 
 async function pageLoader(page) {
-    let links = `http://koldin.myddns.me:3101/post?page=${page}`
+    let links = `https://koldin.myddns.me:8080/post?page=${page}`
     let posts = false
     if(search != null) links += `&search=${search}`
     
@@ -53,7 +59,7 @@ async function sortData(_sort) {
             controller[i].isClick = true
     }
     if (_sort == "insert") _sort = "id"
-    let links = `http://koldin.myddns.me:3101/post?page=${page}&sort=${_sort}`
+    let links = `https://koldin.myddns.me:8080/post?page=${page}&sort=${_sort}`
     if(search != null) links += `&search=${search}`
 
     const res = await fetch(links)

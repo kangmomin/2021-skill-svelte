@@ -14,7 +14,7 @@
             title
         })
         
-        let res = await fetch("http://koldin.myddns.me:3101/post", {
+        let res = await fetch("https://koldin.myddns.me:8080/post", {
             method: "post",
             body
         })

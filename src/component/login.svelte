@@ -8,7 +8,7 @@
             return alert("아이디 혹은 패스워드는 필수 기입칸입니다.")
         }
         
-        let res = await fetch("http://koldin.myddns.me:3101/login", {
+        let res = await fetch("https://koldin.myddns.me:8080/login", {
             method: "post",
             credentials: 'include',
             body: JSON.stringify({
