@@ -4,8 +4,8 @@ import { onMount } from 'svelte';
 
 //get query String
 const urlParams = new URLSearchParams(window.location.search)
-const page = urlParams.get("page")
 const search = urlParams.get("search") || null
+let page = urlParams.get("page") || 1
 
 let controller = [
     {
@@ -43,9 +43,9 @@ onMount(async () => {
     posts = await res.json()
 })
 
-async function pageLoader(page) {
+async function pageLoader(_page) {
+    page = _page
     let links = `https://koldin.myddns.me:8080/post?page=${page}`
-    let posts = false
     if(search != null) links += `&search=${search}`
     
     const res = await fetch(links)
@@ -105,7 +105,7 @@ async function sortData(_sort) {
                 {#if posts.nowPage == i+1}
                     <input type="button" value="{i+1}" id="clickedPageNav">
                 {:else}
-                    <input type="button" value="{i+1}" class="pageNav" on:click="{pageLoader(i+1)}">
+                    <input type="button" value="{i+1}" class="pageNav" on:click="{() => pageLoader(i+1)}">
                 {/if}
             {/each}
             {/if}

@@ -8,6 +8,7 @@
         document.cookie = "tocken="
         if (document.cookie.split("; ").find((row) => row.startsWith("tocken"))) 
             tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
+        location.href = "/"
     }
 </script>
 

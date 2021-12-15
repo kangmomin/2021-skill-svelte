@@ -1,0 +1,19 @@
+[debug] [2021-12-15T00:33:09.745Z] ----------------------------------------------------------------------
+[debug] [2021-12-15T00:33:09.746Z] Command:       C:\Program Files\nodejs\node.exe C:\Users\UserK\AppData\Roaming\npm\node_modules\firebase-tools\lib\bin\firebase.js deploy --only hosting
+[debug] [2021-12-15T00:33:09.747Z] CLI Version:   9.23.1
+[debug] [2021-12-15T00:33:09.747Z] Platform:      win32
+[debug] [2021-12-15T00:33:09.747Z] Node Version:  v12.18.4
+[debug] [2021-12-15T00:33:09.748Z] Time:          Wed Dec 15 2021 09:33:09 GMT+0900 (GMT+09:00)
+[debug] [2021-12-15T00:33:09.748Z] ----------------------------------------------------------------------
+[debug] 
+[debug] [2021-12-15T00:33:09.795Z] > command requires scopes: ["email","openid","https://www.googleapis.com/auth/cloudplatformprojects.readonly","https://www.googleapis.com/auth/firebase","https://www.googleapis.com/auth/cloud-platform"]
+[debug] [2021-12-15T00:33:09.796Z] > authorizing via signed-in user (momin108902@gmail.com)
+[debug] [2021-12-15T00:33:09.796Z] [iam] checking project pcs-anonymous for permissions ["firebase.projects.get","firebasehosting.sites.update"]
+[debug] [2021-12-15T00:33:09.797Z] >>> HTTP REQUEST POST https://cloudresourcemanager.googleapis.com/v1/projects/pcs-anonymous:testIamPermissions  
+ {"permissions":["firebase.projects.get","firebasehosting.sites.update"]}
+[debug] [2021-12-15T00:33:10.633Z] <<< HTTP RESPONSE 200 {"content-type":"application/json; charset=UTF-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","date":"Wed, 15 Dec 2021 00:33:08 GMT","server":"ESF","cache-control":"private","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","server-timing":"gfet4t7; dur=575","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-12-15T00:33:10.634Z] > refreshing access token with scopes: []
+[debug] [2021-12-15T00:33:10.634Z] >>> HTTP REQUEST POST https://www.googleapis.com/oauth2/v3/token  
+ <request body omitted>
+[debug] [2021-12-15T00:33:10.871Z] <<< HTTP RESPONSE 200 {"cache-control":"no-cache, no-store, max-age=0, must-revalidate","expires":"Mon, 01 Jan 1990 00:00:00 GMT","date":"Wed, 15 Dec 2021 00:33:09 GMT","pragma":"no-cache","content-type":"application/json; charset=utf-8","vary":"X-Origin, Referer, Origin,Accept-Encoding","server":"scaffolding on HTTPServer2","x-xss-protection":"0","x-frame-options":"SAMEORIGIN","x-content-type-options":"nosniff","alt-svc":"h3=\":443\"; ma=2592000,h3-29=\":443\"; ma=2592000,h3-Q050=\":443\"; ma=2592000,h3-Q046=\":443\"; ma=2592000,h3-Q043=\":443\"; ma=2592000,quic=\":443\"; ma=2592000; v=\"46,43\"","accept-ranges":"none","transfer-encoding":"chunked"}
+[debug] [2021-12-15T00:33:10.887Z] >>> [apiv2][query] GET https://firebase.googleapis.com/v1beta1/projects/pcs-anonymous [none]

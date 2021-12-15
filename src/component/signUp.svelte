@@ -30,13 +30,11 @@
     }
     
     async function signUp() {
-        if (!id.length || !name.length || !password.length || !studentId.length) {
+        if (!id.length || !name.length || !password.length || !studentId.length || !authImgPath.length) {
             return alert("모든 칸을 채워주십시오")
         }
         
         let body = JSON.stringify({ id, name, password, studentId, authImg: authImgPath})
-        
-        console.log(body)
         
         let res = await fetch("https://koldin.myddns.me:8080/sign-up", {
             method: "post",
@@ -45,7 +43,7 @@
         
         if (res) {
             alert("가입 완료")
-            // location.href = "/login"
+            location.href = "/login"
             return
         }
         
