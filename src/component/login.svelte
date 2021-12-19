@@ -10,7 +10,6 @@
         
         let res = await fetch("https://koldin.myddns.me:8080/login", {
             method: "post",
-            credentials: 'include',
             body: JSON.stringify({
                 "accountId": id,
                 "accountPassword": password

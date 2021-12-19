@@ -2,6 +2,7 @@
     import {Link} from "svelte-routing"
     
     let tocken
+    let keyWord = ""
     if (document.cookie.split("; ").find((row) => row.startsWith("tocken"))) 
         tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
     function deleteTocken() {
@@ -10,16 +11,25 @@
             tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
         location.href = "/"
     }
+    
+    function search() {
+        location.href = "?search=" + keyWord
+    }
+    
+    const onKeyPress = e => {
+        if (e.charCode === 13) search()
+    }
 </script>
 
 <div class="header"> <!--헤더-->
-    <Link to="/">
+    <a href="https://pcs-anonymous.web.app/">
         <div class="logo">
             <img src="../img/bb963f70a53da7f53e08ae6c28e0f2dd5963a909179a89eb42ad47e202c2281515a57a5b6eb427ae452c38e44f1ff8b76ae7b8a52ae50a9ce7cee9201d676d07d844da82ba298baa50b8326eedfd9ef718efdf.jpg" alt="">
         </div><!--로고자리-->
-    </Link>
+    </a>
     <div class="headerBtn">
-        <input class="searchBtn" type="button" value="검색"> <!--검색버튼-->
+        <input type="text" bind:value="{keyWord}" class="searchBar" on:keypress="{onKeyPress}">
+        <input class="searchBtn" type="button" value="검색" on:click="{search}"> <!--검색버튼-->
         {#if tocken}
         <Link to="write-post">
             <input class="loginBtn" type="button" value="글 작성"><!--글작성 버튼-->
@@ -70,6 +80,13 @@
     color: white;
     font-size: 20px;
     margin-right: 20px;
+}
+.searchBar {
+  width: 250px;
+  height: 35px;
+  border-radius: 10px;
+  border: 2px solid #7689cd;
+  margin-right: 30px;
 }
 .loginBtn {
     width: 100px;

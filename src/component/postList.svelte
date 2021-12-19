@@ -6,6 +6,9 @@ import { onMount } from 'svelte';
 const urlParams = new URLSearchParams(window.location.search)
 const search = urlParams.get("search") || null
 let page = urlParams.get("page") || 1
+let res
+let isOkay = false
+let sort = ""
 
 let controller = [
     {
@@ -33,23 +36,34 @@ if (document.cookie.split("; ").find((row) => row.startsWith("tocken")))
     tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
 else
     document.cookie = "tocken="
-
+    
 let links = `https://koldin.myddns.me:8080/post?page=${page}`
 let posts = false
 if(search != null) links += `&search=${search}`
+
 onMount(async () => {
     // document.cookie = "tocken="
-    const res = await fetch(links)
+    res = await fetch(links+"&sort=good")
+    if (!res.ok) {
+        return isOkay = true
+    }
     posts = await res.json()
+    isOkay = true
 })
 
 async function pageLoader(_page) {
+    res = undefined
+    posts = false
     page = _page
-    let links = `https://koldin.myddns.me:8080/post?page=${page}`
+    let links = `https://koldin.myddns.me:8080/post?page=${page}&sort=${sort}`
     if(search != null) links += `&search=${search}`
     
-    const res = await fetch(links)
+    res = await fetch(links)
+    if (!res.ok) {
+        return posts = []
+    }
     posts = await res.json()
+    isOkay = true
 }
 
 async function sortData(_sort) {
@@ -59,11 +73,13 @@ async function sortData(_sort) {
             controller[i].isClick = true
     }
     if (_sort == "insert") _sort = "id"
+    sort = _sort
     let links = `https://koldin.myddns.me:8080/post?page=${page}&sort=${_sort}`
     if(search != null) links += `&search=${search}`
 
     const res = await fetch(links)
     posts = await res.json()
+    window.scrollTo(0, 0)
 }
 </script>
 
@@ -74,6 +90,7 @@ async function sortData(_sort) {
     <p class="view">조회수</p>
     <p class="like">추천수</p>
 </div>
+{#if isOkay}
 {#if posts}
     <li class="main"> <!--메인 내용-->
         {#each posts.data as {id, title, created, view, good}}
@@ -100,18 +117,21 @@ async function sortData(_sort) {
         </div>
         <div class="rectangle">
             <input type="button" value="<" class="pageNav"> <!--이전페이지-->
-        {#if posts.lastPage > 0}
-            {#each Array(posts.lastPage) as _, i}
-                {#if posts.nowPage == i+1}
-                    <input type="button" value="{i+1}" id="clickedPageNav">
-                {:else}
-                    <input type="button" value="{i+1}" class="pageNav" on:click="{() => pageLoader(i+1)}">
-                {/if}
-            {/each}
+            {#if posts.lastPage > 0}
+                {#each Array(posts.lastPage) as _, i}
+                    {#if posts.nowPage == i+1}
+                        <input type="button" value="{i+1}" id="clickedPageNav">
+                    {:else}
+                        <input type="button" value="{i+1}" class="pageNav" on:click="{() => pageLoader(i+1)}">
+                    {/if}
+                {/each}
             {/if}
             <input type="button" value=">" class="pageNav"> <!--다음페이지-->
         </div>
     </div>
+    {:else}
+    <h2 style="text-align: center;">Not Found Posts</h2>
+    {/if}
 {:else}
     <h2 id="loading">Now Loading...</h2>
 {/if}

@@ -113,7 +113,7 @@
                     {:else}
                         <input class="likeBtn" type="button" value="추천" on:click="{addGood}"> <!--추천 버튼-->
                     {/if}
-                    <input class="hateBtn" type="button" value="비추천"> <!--비추천 버튼-->
+                    <!-- <input class="hateBtn" type="button" value="비추천"> 비추천 버튼 -->
                 {/if}
             </div>
         </div>
