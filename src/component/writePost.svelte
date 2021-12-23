@@ -1,5 +1,5 @@
 <script>
-    let description = "", title = ""
+    let description = "", title = "", avatar, files
 
     async function writePost() {
         let tocken
@@ -19,18 +19,47 @@
             body
         })
         
-        location.href = "/"
-        // let data = res.json()
+        if(res.ok)
+          return location.href = "/"
+        console.log(res.json())
+    }
+    
+    async function imageUpload() {
+      let data = files
+        let form = new FormData()
+        form.append("image", data)
+        
+        let res = await fetch("https://koldin.myddns.me:8080/image", {
+            method: "post",
+            body: form
+        })
+        
+        let path = await res.json()
+        let authImgPath = path.imgPath
+        
+        let des = document.querySelector(".mainContent")
+        des.innerHTML += `<img src='https://koldin.myddns.me:8080/public/${path.imgPath}' style="max-width: 100%">`
+    }
+
+    const onFileSelected = (e)=>{
+      files = e.target.files[0]
+      let reader = new FileReader()
+      reader.readAsDataURL(files)
+      reader.onload = e => {
+        avatar = e.target.result
+      }
     }
 </script>
 
 <!--메인영역-->
 <div class="main">
-    <input type="text" placeholder="제목" id="title" bind:value="{title}">
+    <input type="text" placeholder="제목" class="title" bind:value="{title}">
     <div class="post"> <!--작성할게시글 영역-->
-        <textarea bind:value={description}></textarea>
-        <!-- <input type="text" placeholder="이미지 업로드 인풋창">
-        <input type="button" value="이미지 업로드"> 업로드버튼 -->
+        <div class="mainContent" bind:innerHTML={description} contenteditable="true"></div>
+        <div>
+          <input class="uploadArea" type="file" accept="image/*" on:change={(e) => {onFileSelected(e)}} placeholder="이미지 업로드 인풋창">
+          <input class="uploadBtn" type="button" on:click="{imageUpload}" value="이미지 업로드">
+        </div>
     </div>
     <input class="writeBtn" type="button" value="글 작성" on:click="{writePost}">
 </div>
@@ -45,34 +74,31 @@
   align-items: center;
   justify-content: center;
 }
-#title {
-    width: 1030px;
-    border: 2px solid #7689cd;
-    border-radius: 20px;
-    padding: 10px;
-}
 .post {
   width: 1100px;
-  height: 700px;
+  height: 800px;
   border-bottom: 2px solid #cdcdcd;
   display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
 }
-.post textarea {
+.mainContent {
   width: 1030px;
   height: 680px;
-  margin: 0 auto;
   border: 2px solid #7689cd;
   border-radius: 20px;
   padding: 10px;
+  overflow: auto;
 }
-/* .post > input:nth-child(2) {
+.uploadArea {
   width: 300px;
   margin-left: 585px;
   border: 2px solid #7689cd;
   padding: 10px;
   margin-top: 20px;
 }
-.post > input:nth-child(3) {
+.uploadBtn {
   width: 120px;
   margin-left: 20px;
   border: 2px solid #7689cd;
@@ -80,7 +106,7 @@
   border-radius: 10px;
   background-color: white;
   margin-top: 20px;
-} */
+}
 .writeBtn {
   width: 120px;
   margin-top: 20px;
@@ -88,7 +114,13 @@
   border: 2px solid #7689cd;
   background-color: white;
   border-radius: 10px;
-  margin-left: 890px;
+  margin-left: 72%;
 }
-
+.title {
+  width: 1030px;
+  height: 20px;
+  border: 2px solid #7689cd;
+  padding: 20px;
+  border-radius: 10px;
+}
 </style>

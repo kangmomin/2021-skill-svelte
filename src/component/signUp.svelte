@@ -55,7 +55,7 @@
         let form = new FormData()
         form.append("image", data)
         
-        let res = await fetch("https://koldin.myddns.me:8080/upload", {
+        let res = await fetch("https://koldin.myddns.me:8080/auth-image", {
             method: "post",
             body: form
         })

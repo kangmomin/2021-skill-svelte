@@ -1,18 +1,19 @@
 <script>
     import { onMount } from 'svelte';
     export let postId
-    let tocken, replyData, post
-    let reply = ""
+    let tocken, post
+    let reply = "", refReply = ""
     let isGood = false
+    let replyData = {
+        reply: "",
+        refReply: ""
+    }
     
     if (document.cookie.split("; ").find((row) => row.startsWith("tocken"))) 
         tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
         
     onMount(async () => {
-        let res = await fetch("https://koldin.myddns.me:8080/reply/" + postId)
-        replyData = await res.json()
-
-        res = await fetch("https://koldin.myddns.me:8080/post/" + postId, {
+        let res = await fetch("https://koldin.myddns.me:8080/post/" + postId, {
             method: "POST",
             body: JSON.stringify({
                 tocken
@@ -20,7 +21,13 @@
         })
         post = await res.json()
         getGood()
+        getReply()
     })
+    
+    async function getReply() {
+        let res = await fetch("https://koldin.myddns.me:8080/reply/" + postId)
+        replyData = await res.json()
+    }
     
     async function getGood() {
         let res = await fetch("https://koldin.myddns.me:8080/good/" + postId, {
@@ -60,22 +67,52 @@
         location.href = "/"
     }
     
-    async function writeReply() {
-        if (reply.length < 1)
-            return alert("빈 댓글은 작성할 수 없습니다.")
+    async function writeReply(refReplyId=0) {
+        let description = ""
+        if (refReplyId == 0) {
+            description = reply
+            if (reply.length < 1)
+                return alert("빈 댓글은 작성할 수 없습니다.")
+        } else {
+            description = refReply
+            if (refReply.length < 1)
+                return alert("빈 댓글은 작성할 수 없습니다.")
+        }
 
         let res = await fetch("https://koldin.myddns.me:8080/reply", {
             method: "POST",
             body: JSON.stringify({
                 tocken,
-                description: reply,
-                postId
+                description,
+                postId: Number(postId),
+                refReplyId
             })
         })
         
         reply = ""
+        refReply = ""
         
+        alert("작성되었습니다.")
+        closeWriteRefReply()
         callReply()
+    }
+    
+    function showWriteRefReply(type, idx, tag = 0) {
+        let replyArea = document.querySelectorAll(type)
+        closeWriteRefReply()
+        replyArea[idx].style.display = "block"
+        if (type == ".writeRefReplyArea") refReply = `to USER-${tag}-`
+    }
+    
+    function closeWriteRefReply() {
+        reply = ""
+        refReply = ""
+        let replyArea = document.querySelectorAll(".refReplyWriter")
+        let writeRefReply = document.querySelectorAll(".writeRefReplyArea")
+        for (let i = 0; i < replyArea.length; i++) 
+            replyArea[i].style.display = "none"
+        for (let i = 0; i < writeRefReply.length; i++) 
+            writeRefReply[i].style.display = "none"
     }
     
     async function callReply() {
@@ -104,7 +141,7 @@
         </div>
         <div class="description"> <!--메인 내용-->
             <p>
-                {post.description}
+                {@html post.description}
             </p>
             <div class="descriptionBtn">
                 {#if tocken.length > 1}
@@ -129,8 +166,8 @@
     {/if}
     
     <div class="replyArea"> <!--댓글영역-->
-        {#if replyData}
-            {#each replyData as {created, ownerId, description}}
+        {#if replyData.reply}
+            {#each replyData.reply as {id, created, ownerId, description}, i}
                 <div class="replyBox"> <!--댓글 테두리-->
                     <div class="replyInfo"><!--댓글 작성자 정보-->
                         <p class="id"> <!--댓글 작성자 아이디-->
@@ -144,10 +181,47 @@
                         {description}
                     </div>
                     <div class="otherBtn"> <!--신고 답글달기버튼-->
-                        <input type="button" href="#" class="report" value="신고"> <!--신고버튼-->
-                        <input type="button" href="#" class="ref-replyBtn" value="답글달기"> <!--대댓글버튼-->
+                        <input type="button" class="report" value="신고"> <!--신고버튼-->
+                        <input type="button" class="ref-replyBtn" value="답글달기"
+                            on:click={() => showWriteRefReply(".refReplyWriter", i)}> <!--대댓글버튼-->
                     </div>
                 </div>
+                <div class="refReplyWriter">
+                    <div class="writeRefreply">
+                        <div class="writeRefreplyArea" contenteditable="true" bind:innerHTML="{refReply}"></div>
+                        <input type="button" value="작성" on:click={() => writeReply(id)}>
+                    </div>
+                </div>
+                {#if replyData.refReply}
+                {#each replyData.refReply as {created, ownerId, description, refReplyId}, i}
+                {#if refReplyId == id}
+                <div class="refReply"> <!--대댓글-->
+                    <div class="replyInfo">
+                        <p class="id">
+                           <span>ㄴ</span> USER-{ownerId}
+                        </p>
+                        <p class="date">
+                            {created}
+                        </p>
+                    </div>
+                    <div class="replyText">
+                        {description}
+                    </div>
+                    <div class="otherBtn">
+                        <input type="button" class="reportBtn" value="신고">
+                        <input type="button" class="ref-replyBtn" value="답글달기"
+                        on:click={() => showWriteRefReply(".writeRefReplyArea", i, ownerId)}>
+                    </div>
+                </div>
+                <div class="writeRefReplyArea">
+                    <div class="writeRefreply">
+                        <div class="writeRefreplyArea" bind:innerHTML="{refReply}" contenteditable="true"></div>
+                        <input type="button" value="작성" on:click={() => writeReply(id)}>
+                    </div>
+                </div>
+                {/if}
+                {/each}
+                {/if}
             {/each}
         {/if}
     </div>
@@ -195,15 +269,6 @@
 }
 .otherBtn input:hover {
     cursor: pointer;
-}
-.refReply {
-    background-color: #ebebeb;
-    border: 1px solid #3A38B2;
-    padding: 10px;
-    padding-left: 40px;
-}
-.replyInfo span {
-    color: #cdcdcd;
 }
 .descriptionArea {
     width: 1200px;
@@ -281,5 +346,49 @@
   border: 1px solid #3a38b2;
   border-radius: 6px;
   float: right;
+}
+
+.refReply {
+  background-color: #ebebeb;
+  border: 1px solid #3a38b2;
+  padding: 10px;
+  padding-left: 40px;
+}
+.refReply span {
+  color: #cdcdcd;
+}
+
+.writeRefreply {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 10px;
+  border: 1px solid #3a38b2;
+  height: 90px;
+  background-color: #ebebeb;
+}
+.writeRefreplyArea {
+  width: 1118px;
+  height: 40px;
+  border: 0.5px solid #3a38b2;
+  background-color: white;
+  border-radius: 5px;
+  padding: 5px;
+  margin-left: 45px;
+}
+.writeRefreply input {
+  width: 65px;
+  height: 35px;
+  background-color: white;
+  border: 1px solid #3a38b2;
+  border-radius: 6px;
+  margin-top: 5px;
+  margin-left: 94.5%;
+}
+.writeRefReplyArea {
+    display: none;
+}
+.refReplyWriter {
+    display: none;
 }
 </style>
