@@ -25,17 +25,21 @@
     })
     
     async function getReply() {
+        replyData = {
+            reply: "",
+            refReply: ""
+        }
         let res = await fetch("https://koldin.myddns.me/reply/" + postId)
         replyData = await res.json()
     }
     
     async function getGood() {
+        isGood = false
         let res = await fetch("https://koldin.myddns.me/good/" + postId, {
             method:"POST",
             body: JSON.stringify({tocken})
         })
         let goodData = await res.json()
-        isGood = false
         if(goodData.isGood > 0) isGood = true
     }
     
@@ -68,17 +72,25 @@
     }
     
     async function writeReply(refReplyId=0) {
+        let postBtn = document.querySelectorAll(".writeReplyBtn")
+        let loadingImg = document.querySelectorAll(".loadingArea")
+        for(let i = 0; i < postBtn.length; i++) {
+            postBtn[i].style.display = "none"
+            loadingImg[i].style.display = "block"
+        }
+            
         let description = ""
+        console.log(refReplyId)
         if (refReplyId == 0) {
             description = reply
             if (reply.length < 1)
-                return alert("빈 댓글은 작성할 수 없습니다.")
+            return alert("빈 댓글은 작성할 수 없습니다.")
         } else {
             description = refReply
             if (refReply.length < 1)
-                return alert("빈 댓글은 작성할 수 없습니다.")
+            return alert("빈 댓글은 작성할 수 없습니다.")
         }
-
+        
         let res = await fetch("https://koldin.myddns.me/reply", {
             method: "POST",
             body: JSON.stringify({
@@ -93,6 +105,10 @@
         refReply = ""
         
         alert("작성되었습니다.")
+        for(let i = 0; i < postBtn.length; i++) {
+            postBtn[i].style.display = "block"
+            loadingImg[i].style.display = "none"
+        }
         closeWriteRefReply()
         callReply()
     }
@@ -116,6 +132,7 @@
     }
     
     async function callReply() {
+        replyData = null
         let res = await fetch("https://koldin.myddns.me/reply/" + postId)
         replyData = await res.json()
     }
@@ -162,7 +179,7 @@
     {#if tocken.length > 1}
         <div class="writeReply">
             <textarea bind:value={reply}></textarea> <!--댓글 작성할내용-->
-            <input type="button" value="작성" on:click="{writeReply}"> <!--댓글 작성버튼-->
+            <input type="button" value="작성" on:click="{() => writeReply()}"> <!--댓글 작성버튼-->
         </div>
     {/if}
     
@@ -189,8 +206,11 @@
                 </div>
                 <div class="refReplyWriter">
                     <div class="writeRefreply">
-                        <div class="writeRefreplyArea" contenteditable="true" bind:innerHTML="{refReply}"></div>
-                        <input type="button" value="작성" on:click={() => writeReply(id)}>
+                        <textarea class="writeRefreplyArea" bind:value="{refReply}"></textarea>
+                        <input type="button" value="작성" class="writeReplyBtn" on:click={() => writeReply(id)}>
+                        <div class="loadingArea">
+                            <img class="loading" src="../img/loading.gif" alt="loading" width="30px" height="30px">
+                        </div>
                     </div>
                 </div>
                 {#if replyData.refReply}
@@ -216,8 +236,11 @@
                 </div>
                 <div class="writeRefReplyArea">
                     <div class="writeRefreply">
-                        <div class="writeRefreplyArea" bind:innerHTML="{refReply}" contenteditable="true"></div>
-                        <input type="button" value="작성" on:click={() => writeReply(id)}>
+                        <textarea class="writeRefreplyArea" bind:value="{refReply}"></textarea>
+                        <input type="button" value="작성" class="writeReplyBtn" on:click={() => writeReply(id)}>
+                        <div class="loadingArea">
+                            <img class="loading" src="../img/loading.gif" alt="loading" width="30px" height="30px">
+                        </div>
                     </div>
                 </div>
                 {/if}
@@ -340,9 +363,8 @@
 }
 .writeReply textarea {
   width: 1200px;
-  height: 100px;
   padding: 10px;
-  resize: none;
+  resize: vertical;
 }
 .writeReply input {
   width: 65px;
@@ -374,12 +396,11 @@
 }
 .writeRefreplyArea {
   width: 1118px;
-  height: 40px;
   border: 0.5px solid #3a38b2;
   background-color: white;
+  padding: 13px;
   border-radius: 5px;
-  padding: 5px;
-  margin-left: 45px;
+  margin-left: 35px;
 }
 .writeRefreply input {
   width: 65px;

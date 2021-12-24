@@ -2,9 +2,13 @@
     let description = "", title = "", avatar, files
 
     async function writePost() {
+        let loadingImg = document.querySelector(".loadingArea")
+        let writeBtn = document.querySelector(".writeBtn")
+        loadingImg.style.display = "block"
+        writeBtn.style.display = "none"
         let tocken
         if (document.cookie.split("; ").find((row) => row.startsWith("tocken"))) 
-            tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
+        tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
         else
             location.href = "/"
 
@@ -12,16 +16,17 @@
             tocken,
             description,
             title
-        })
-        
-        let res = await fetch("https://koldin.myddns.me/post", {
+          })
+          
+          let res = await fetch("https://koldin.myddns.me/post", {
             method: "post",
             body
         })
         
         if(res.ok)
-          return location.href = "/"
-        console.log(res.json())
+        return location.href = "/"
+      loadingImg.style.display = "none"
+      writeBtn.style.display = "block"
     }
     
     async function imageUpload() {
@@ -62,7 +67,9 @@
         </div>
     </div>
     <input class="writeBtn" type="button" value="글 작성" on:click="{writePost}">
-    <img src="../img/loading.gif" alt="loading" id="loading">
+    <div class="loadingArea">
+      <img class="loading" src="../img/loading.gif" alt="loading" width="100px" height="100px">
+  </div>
 </div>
 <!--메인end-->
 
@@ -75,8 +82,11 @@
   align-items: center;
   justify-content: center;
 }
-#loading {
-  display: "none";
+.loadingArea {
+  display: flex;
+}
+.loading {
+  margin: auto;
 }
 .post {
   width: 1100px;
