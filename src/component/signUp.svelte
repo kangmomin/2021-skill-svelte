@@ -3,7 +3,7 @@
     let files, avatar
 
     async function overlapChecker(type) {
-        let link = "https://koldin.myddns.me:8080/overlap-check/" + type
+        let link = "https://koldin.myddns.me/overlap-check/" + type
         let body
         
         if (type === "student-id") {
@@ -36,7 +36,7 @@
         
         let body = JSON.stringify({ id, name, password, studentId, authImg: authImgPath})
         
-        let res = await fetch("https://koldin.myddns.me:8080/sign-up", {
+        let res = await fetch("https://koldin.myddns.me/sign-up", {
             method: "post",
             body
         })
@@ -55,7 +55,7 @@
         let form = new FormData()
         form.append("image", data)
         
-        let res = await fetch("https://koldin.myddns.me:8080/auth-image", {
+        let res = await fetch("https://koldin.myddns.me/auth-image", {
             method: "post",
             body: form
         })

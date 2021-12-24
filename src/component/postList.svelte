@@ -37,7 +37,7 @@ if (document.cookie.split("; ").find((row) => row.startsWith("tocken")))
 else
     document.cookie = "tocken="
     
-let links = `https://koldin.myddns.me:8080/post?page=${page}`
+let links = `https://koldin.myddns.me/post?page=${page}`
 let posts = false
 if(search != null) links += `&search=${search}`
 
@@ -55,7 +55,7 @@ async function pageLoader(_page) {
     res = undefined
     posts = false
     page = _page
-    let links = `https://koldin.myddns.me:8080/post?page=${page}&sort=${sort}`
+    let links = `https://koldin.myddns.me/post?page=${page}&sort=${sort}`
     if(search != null) links += `&search=${search}`
     
     res = await fetch(links)
@@ -74,7 +74,7 @@ async function sortData(_sort) {
     }
     if (_sort == "insert") _sort = "id"
     sort = _sort
-    let links = `https://koldin.myddns.me:8080/post?page=${page}&sort=${_sort}`
+    let links = `https://koldin.myddns.me/post?page=${page}&sort=${_sort}`
     if(search != null) links += `&search=${search}`
 
     const res = await fetch(links)
@@ -133,16 +133,12 @@ async function sortData(_sort) {
     <h2 style="text-align: center;">Not Found Posts</h2>
     {/if}
 {:else}
-    <h2 id="loading">Now Loading...</h2>
+    <img src="../img/loading.gif" alt="loading">
 {/if}
 <style>
 * {
     margin: 0;
     padding: 0;
-}
-
-#loading {
-    text-align: center;
 }
 
 .info {

@@ -13,7 +13,7 @@
         tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
         
     onMount(async () => {
-        let res = await fetch("https://koldin.myddns.me:8080/post/" + postId, {
+        let res = await fetch("https://koldin.myddns.me/post/" + postId, {
             method: "POST",
             body: JSON.stringify({
                 tocken
@@ -25,12 +25,12 @@
     })
     
     async function getReply() {
-        let res = await fetch("https://koldin.myddns.me:8080/reply/" + postId)
+        let res = await fetch("https://koldin.myddns.me/reply/" + postId)
         replyData = await res.json()
     }
     
     async function getGood() {
-        let res = await fetch("https://koldin.myddns.me:8080/good/" + postId, {
+        let res = await fetch("https://koldin.myddns.me/good/" + postId, {
             method:"POST",
             body: JSON.stringify({tocken})
         })
@@ -40,7 +40,7 @@
     }
     
     async function addGood() {
-        let res = await fetch("https://koldin.myddns.me:8080/add-good/" + postId, {
+        let res = await fetch("https://koldin.myddns.me/add-good/" + postId, {
             method:"POST",
             body: JSON.stringify({ tocken })
         })
@@ -48,7 +48,7 @@
     }
     
     async function deleteGood() {
-        let res = await fetch("https://koldin.myddns.me:8080/delete-good/" + postId, {
+        let res = await fetch("https://koldin.myddns.me/delete-good/" + postId, {
             method:"POST",
             body: JSON.stringify({ tocken })
         })
@@ -58,7 +58,7 @@
     async function deletePost() {
         let answer = prompt("정말로 삭제하시겠습니까? '네'", "")
         if (answer !== '네') return 0
-        let res = await fetch("https://koldin.myddns.me:8080/delete-post?id=" + postId, {
+        let res = await fetch("https://koldin.myddns.me/delete-post?id=" + postId, {
             method: "POST",
             body: JSON.stringify({ tocken })
         })
@@ -79,7 +79,7 @@
                 return alert("빈 댓글은 작성할 수 없습니다.")
         }
 
-        let res = await fetch("https://koldin.myddns.me:8080/reply", {
+        let res = await fetch("https://koldin.myddns.me/reply", {
             method: "POST",
             body: JSON.stringify({
                 tocken,
@@ -116,7 +116,7 @@
     }
     
     async function callReply() {
-        let res = await fetch("https://koldin.myddns.me:8080/reply/" + postId)
+        let res = await fetch("https://koldin.myddns.me/reply/" + postId)
         replyData = await res.json()
     }
 </script>
@@ -155,7 +155,7 @@
             </div>
         </div>
     {:else}
-        <h1 id="loading">Now Loading...</h1>
+        <img src="../img/loading.gif" alt="loading">
     {/if}
     
     {#if tocken.length > 1}
@@ -223,6 +223,8 @@
                 {/each}
                 {/if}
             {/each}
+        {:else}
+            <img src="../img/loading.gif" alt="loading">
         {/if}
     </div>
 </div>
@@ -235,11 +237,6 @@
     margin: 0;
     padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
-}
-
-#loading {
-    text-align: center;
-    margin-top: 50%;
 }
 
 .replyBox {

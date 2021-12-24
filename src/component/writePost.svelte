@@ -14,7 +14,7 @@
             title
         })
         
-        let res = await fetch("https://koldin.myddns.me:8080/post", {
+        let res = await fetch("https://koldin.myddns.me/post", {
             method: "post",
             body
         })
@@ -29,7 +29,7 @@
         let form = new FormData()
         form.append("image", data)
         
-        let res = await fetch("https://koldin.myddns.me:8080/image", {
+        let res = await fetch("https://koldin.myddns.me/image", {
             method: "post",
             body: form
         })
@@ -38,7 +38,7 @@
         let authImgPath = path.imgPath
         
         let des = document.querySelector(".mainContent")
-        des.innerHTML += `<img src='https://koldin.myddns.me:8080/public/${path.imgPath}' style="max-width: 100%">`
+        des.innerHTML += `<img src='https://koldin.myddns.me/public/${path.imgPath}' style="max-width: 100%">`
     }
 
     const onFileSelected = (e)=>{
@@ -62,6 +62,7 @@
         </div>
     </div>
     <input class="writeBtn" type="button" value="글 작성" on:click="{writePost}">
+    <img src="../img/loading.gif" alt="loading" id="loading">
 </div>
 <!--메인end-->
 
@@ -73,6 +74,9 @@
   flex-direction: column;
   align-items: center;
   justify-content: center;
+}
+#loading {
+  display: "none";
 }
 .post {
   width: 1100px;
