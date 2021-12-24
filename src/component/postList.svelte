@@ -133,7 +133,9 @@ async function sortData(_sort) {
     <h2 style="text-align: center;">Not Found Posts</h2>
     {/if}
 {:else}
-    <img src="../img/loading.gif" alt="loading">
+<div class="loadingArea">
+    <img class="loading" src="../img/loading.gif" alt="loading" width="100px" height="100px">
+</div>
 {/if}
 <style>
 * {
@@ -148,6 +150,12 @@ async function sortData(_sort) {
     font-size: 18px;
     justify-content: space-between;
     padding: 10px;
+}
+.loadingArea {
+    display: flex;
+}
+.loading {
+    margin: auto;
 }
 .id {
     width: 10%;

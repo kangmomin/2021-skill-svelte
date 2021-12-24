@@ -150,12 +150,13 @@
                     {:else}
                         <input class="likeBtn" type="button" value="추천" on:click="{addGood}"> <!--추천 버튼-->
                     {/if}
-                    <!-- <input class="hateBtn" type="button" value="비추천"> 비추천 버튼 -->
                 {/if}
             </div>
         </div>
     {:else}
-        <img src="../img/loading.gif" alt="loading">
+    <div class="loadingArea">
+        <img class="loading" src="../img/loading.gif" alt="loading" width="100px" height="100px">
+    </div>
     {/if}
     
     {#if tocken.length > 1}
@@ -224,7 +225,9 @@
                 {/if}
             {/each}
         {:else}
-            <img src="../img/loading.gif" alt="loading">
+        <div class="loadingArea">
+            <img class="loading" src="../img/loading.gif" alt="loading" width="100px" height="100px">
+        </div>
         {/if}
     </div>
 </div>
@@ -321,7 +324,12 @@
     border-radius: 10px;
     margin: 5px;
 }
-
+.loadingArea {
+    display: flex;
+}
+.loading {
+    margin: auto;
+}
 .descriptionBtn input:hover {
     cursor: pointer;
 }
