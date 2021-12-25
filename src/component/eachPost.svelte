@@ -1,14 +1,15 @@
 <script>
-  import { onMount } from "svelte";
-  export let postId;
-  let tocken, post;
-  let reply = "",
+    import { onMount } from "svelte";
+    export let postId;
+    let tocken, post;
+    let reply = "",
     refReply = "";
-  let isGood = false;
-  let replyData = {
-    reply: "",
-    refReply: "",
-  };
+    let isLoading = false
+    let isGood = false;
+    let replyData = {
+      reply: "",
+      refReply: "",
+    };
 
   if (document.cookie.split("; ").find((row) => row.startsWith("tocken")))
     tocken = document.cookie
@@ -76,15 +77,8 @@
   }
 
   async function writeReply(refReplyId = 0) {
-    let postBtn = document.querySelectorAll(".writeReplyBtn");
-    let loadingImg = document.querySelectorAll(".loadingArea");
-    for (let i = 0; i < postBtn.length; i++) {
-      postBtn[i].style.display = "none";
-      loadingImg[i].style.display = "block";
-    }
-
+    isLoading = true
     let description = "";
-    console.log(refReplyId);
     if (refReplyId == 0) {
       description = reply;
       if (reply.length < 1) return alert("빈 댓글은 작성할 수 없습니다.");
@@ -105,12 +99,9 @@
 
     reply = "";
     refReply = "";
+    isLoading = false
 
     alert("작성되었습니다.");
-    for (let i = 0; i < postBtn.length; i++) {
-      postBtn[i].style.display = "block";
-      loadingImg[i].style.display = "none";
-    }
     closeWriteRefReply();
     callReply();
   }
@@ -134,9 +125,14 @@
   }
 
   async function callReply() {
-    replyData = null;
+    replyData = replyData = {
+      reply: "",
+      refReply: "",
+    };
     let res = await fetch("https://koldin.myddns.me/reply/" + postId);
     replyData = await res.json();
+    if (replyData.reply === undefined) replyData.reply = null
+    if (replyData.refReply === undefined) replyData.refReply = null
   }
 </script>
 
@@ -194,7 +190,6 @@
         </div>
       </div>
     {:else}
-      <div class="loadingArea">
         <img
           class="loading"
           src="../img/loading.gif"
@@ -202,14 +197,23 @@
           width="100px"
           height="100px"
         />
-      </div>
     {/if}
 
     {#if tocken.length > 1}
       <div class="writeReply">
         <textarea bind:value={reply} />
         <!--댓글 작성할내용-->
-        <input type="button" value="작성" on:click={() => writeReply()} />
+        {#if !isLoading}
+            <input type="button" value="작성" on:click={() => writeReply()} />
+        {:else}
+            <img
+              class="loading"
+              src="../img/loading.gif"
+              alt="loading"
+              width="30px"
+              height="30px"
+            />
+        {/if}
         <!--댓글 작성버튼-->
       </div>
     {/if}
@@ -252,13 +256,14 @@
       <div class="refReplyWriter">
         <div class="writeRefreply">
           <textarea class="writeRefreplyArea" bind:value={refReply} />
+          {#if !isLoading}
           <input
             type="button"
             value="작성"
             class="writeReplyBtn"
             on:click={() => writeReply(id)}
           />
-          <div class="loadingArea">
+          {:else}
             <img
               class="loading"
               src="../img/loading.gif"
@@ -266,7 +271,7 @@
               width="30px"
               height="30px"
             />
-          </div>
+        {/if}
         </div>
       </div>
       {#if replyData.refReply}
@@ -299,21 +304,22 @@
             <div class="writeRefReplyArea">
               <div class="writeRefreply">
                 <textarea class="writeRefreplyArea" bind:value={refReply} />
+                {#if !isLoading}
                 <input
                   type="button"
                   value="작성"
                   class="writeReplyBtn"
                   on:click={() => writeReply(id)}
                 />
-                <div class="loadingArea">
-                  <img
-                    class="loading"
-                    src="../img/loading.gif"
-                    alt="loading"
-                    width="30px"
-                    height="30px"
-                  />
-                </div>
+                {:else}
+                    <img
+                      class="loading"
+                      src="../img/loading.gif"
+                      alt="loading"
+                      width="30px"
+                      height="30px"
+                    />
+                {/if}
               </div>
             </div>
           {/if}
@@ -321,15 +327,13 @@
       {/if}
     {/each}
   {:else}
-    <div class="loadingArea">
-      <img
-        class="loading"
-        src="../img/loading.gif"
-        alt="loading"
-        width="100px"
-        height="100px"
-      />
-    </div>
+  <img
+    class="loading"
+    src="../img/loading.gif"
+    alt="loading"
+    width="100px"
+    height="100px"
+  />
   {/if}
 </div>
 
@@ -428,9 +432,6 @@
     border: 2px solid #3455cb;
     border-radius: 10px;
     margin: 5px;
-  }
-  .loadingArea {
-    display: flex;
   }
   .loading {
     margin: auto;
