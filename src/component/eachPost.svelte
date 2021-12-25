@@ -371,7 +371,8 @@
   }
   .descriptionBox {
     width: 1200px;
-    height: 500px;
+    height: auto;
+    overflow: hidden;
     margin: 0 auto;
   }
   .descriptionArea {
@@ -476,7 +477,7 @@
     justify-content: center;
     padding: 10px;
     border: 1px solid #3a38b2;
-    height: 90px;
+    height: 100%;
     background-color: #ebebeb;
   }
   .writeRefreplyArea {
@@ -486,6 +487,7 @@
     padding: 13px;
     border-radius: 5px;
     margin-left: 35px;
+    resize: vertical;
   }
   .writeRefreply input {
     width: 65px;
