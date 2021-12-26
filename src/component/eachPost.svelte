@@ -77,6 +77,10 @@
   }
 
   async function writeReply(refReplyId = 0) {
+    if (!tocken.length) {
+      alert("로그인이 필요한 작업입니다.\n로그인창으로 이동합니다.")
+      return location.href = "/login"
+    }
     isLoading = true
     let description = "";
     if (refReplyId == 0) {
@@ -103,7 +107,7 @@
 
     alert("작성되었습니다.");
     closeWriteRefReply();
-    callReply();
+    getReply();
   }
 
   function showWriteRefReply(type, idx, tag = 0) {
@@ -122,17 +126,6 @@
       replyArea[i].style.display = "none";
     for (let i = 0; i < writeRefReply.length; i++)
       writeRefReply[i].style.display = "none";
-  }
-
-  async function callReply() {
-    replyData = replyData = {
-      reply: "",
-      refReply: "",
-    };
-    let res = await fetch("https://koldin.myddns.me/reply/" + postId);
-    replyData = await res.json();
-    if (replyData.reply === undefined) replyData.reply = null
-    if (replyData.refReply === undefined) replyData.refReply = null
   }
 </script>
 
@@ -163,60 +156,36 @@
       </div>
       <div class="description">
         <!--메인 내용-->
-        <p>
+        <div>
           {@html post.description}
-        </p>
+        </div>
+        <br>
         <div class="descriptionBtn">
           {#if tocken.length > 1}
             {#if isGood}
-              <input
-                class="likeBtn"
-                id="clickedGoodBtn"
-                type="button"
-                value="추천"
-                on:click={deleteGood}
-              />
+              <input class="likeBtn" id="clickedGoodBtn" type="button" value="추천" on:click={deleteGood} />
               <!--추천 버튼-->
             {:else}
-              <input
-                class="likeBtn"
-                type="button"
-                value="추천"
-                on:click={addGood}
-              />
+              <input class="likeBtn" type="button" value="추천" on:click={addGood} />
               <!--추천 버튼-->
             {/if}
           {/if}
         </div>
       </div>
     {:else}
-        <img
-          class="loading"
-          src="../img/loading.gif"
-          alt="loading"
-          width="100px"
-          height="100px"
-        />
+        <img class="loading" src="../img/loading.gif" alt="loading" width="100px" height="100px" />
     {/if}
 
-    {#if tocken.length > 1}
-      <div class="writeReply">
-        <textarea bind:value={reply} />
-        <!--댓글 작성할내용-->
-        {#if !isLoading}
-            <input type="button" value="작성" on:click={() => writeReply()} />
-        {:else}
-            <img
-              class="loading"
-              src="../img/loading.gif"
-              alt="loading"
-              width="30px"
-              height="30px"
-            />
-        {/if}
-        <!--댓글 작성버튼-->
-      </div>
-    {/if}
+    <div class="writeReply">
+      <textarea bind:value={reply} />
+      <!--댓글 작성할내용-->
+      {#if !isLoading}
+      <input type="button" value="작성" on:click={() => writeReply()} />
+            <!--댓글 작성버튼-->
+      {:else}
+          <img class="loading" src="../img/loading.gif" alt="loading" width="30px" height="30px" />
+      {/if}
+    </div>
   </div>
 </div>
 <div class="replyArea">
@@ -244,12 +213,8 @@
           <!--신고 답글달기버튼-->
           <input type="button" class="report" value="신고" />
           <!--신고버튼-->
-          <input
-            type="button"
-            class="ref-replyBtn"
-            value="답글달기"
-            on:click={() => showWriteRefReply(".refReplyWriter", i)}
-          />
+          <input type="button" class="ref-replyBtn" value="답글달기"
+            on:click={() => showWriteRefReply(".refReplyWriter", i)} />
           <!--대댓글버튼-->
         </div>
       </div>
@@ -257,12 +222,7 @@
         <div class="writeRefreply">
           <textarea class="writeRefreplyArea" bind:value={refReply} />
           {#if !isLoading}
-          <input
-            type="button"
-            value="작성"
-            class="writeReplyBtn"
-            on:click={() => writeReply(id)}
-          />
+          <input type="button" value="작성" class="writeReplyBtn" on:click={() => writeReply(id)} />
           {:else}
             <img
               class="loading"
@@ -326,14 +286,6 @@
         {/each}
       {/if}
     {/each}
-  {:else}
-  <img
-    class="loading"
-    src="../img/loading.gif"
-    alt="loading"
-    width="100px"
-    height="100px"
-  />
   {/if}
 </div>
 
@@ -406,7 +358,7 @@
   .descriptionInfomation p {
     margin: 0 10px;
   }
-  .description p {
+  .description div {
     padding: 50px;
     font-size: 18px;
   }
