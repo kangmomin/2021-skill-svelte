@@ -1,11 +1,8 @@
 <script>
-    let description = "", title = "", avatar, files
+    let description = "", title = "", avatar, files, isLoading = false
 
     async function writePost() {
-        let loadingImg = document.querySelector(".loadingArea")
-        let writeBtn = document.querySelector(".writeBtn")
-        loadingImg.style.display = "block"
-        writeBtn.style.display = "none"
+        isLoading = true
         let tocken
         if (document.cookie.split("; ").find((row) => row.startsWith("tocken"))) 
         tocken = document.cookie.split("; ").find((row) => row.startsWith("tocken")).split("=")[1]
@@ -25,8 +22,7 @@
         
         if(res.ok)
         return location.href = "/"
-      loadingImg.style.display = "none"
-      writeBtn.style.display = "block"
+        isLoading = false
     }
     
     async function imageUpload() {
@@ -66,10 +62,13 @@
           <input class="uploadBtn" type="button" on:click="{imageUpload}" value="이미지 업로드">
         </div>
     </div>
-    <input class="writeBtn" type="button" value="글 작성" on:click="{writePost}">
+    {#if isLoading}
     <div class="loadingArea">
       <img class="loading" src="../img/loading.gif" alt="loading" width="100px" height="100px">
-  </div>
+    </div>
+    {:else}
+    <input class="writeBtn" type="button" value="글 작성" on:click="{writePost}">
+    {/if}
 </div>
 <!--메인end-->
 
