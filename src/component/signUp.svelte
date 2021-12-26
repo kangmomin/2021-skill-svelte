@@ -1,5 +1,5 @@
 <script>
-    let studentId = "", id = "", password = "", name = "", authImgPath = ""
+    let studentId = "", id = "", password = "", name = "", authImgPath = "", isLoading = false
     let files, avatar
 
     async function overlapChecker(type) {
@@ -30,6 +30,7 @@
     }
     
     async function signUp() {
+        isLoading = true
         if (!id.length || !name.length || !password.length || !studentId.length || !authImgPath.length) {
             return alert("모든 칸을 채워주십시오")
         }
@@ -47,10 +48,12 @@
             return
         }
         
+        isLoading = false
         alert("something is wrong value")
     }
     
     async function imgUpload() {
+        isLoading = true
         let data = files
         let form = new FormData()
         form.append("image", data)
@@ -63,6 +66,7 @@
         let path = await res.json()
         authImgPath = path.imgPath
         
+        isLoading = false
         alert("업로드가 완료되었습니다")
     }
     
@@ -101,7 +105,13 @@
                 <br>
                 <input type="file" accept="image/*" placeholder="이미지 업로드"
                     on:change={(e) => {onFileSelected(e)}}> <!--파일머시기?-->
+                {#if isLoading}
+                <div class="loadingArea">
+                    <img class="loading" src="../img/loading.gif" alt="loading" width="100px" height="100px">
+                </div>
+                {:else}
                 <input type="button" value="이미지 삽입" on:click={imgUpload}> <!--이미지 삽입 버튼-->
+                {/if}
             </div>
         </div>
         <br>
@@ -116,7 +126,12 @@
     padding: 0;
     font-family: 'Noto Sans KR', sans-serif;
 }
-
+.loadingArea {
+  display: flex;
+}
+.loading {
+  margin: auto;
+}
 .main {
     width: 700px;
     height: 850px;
